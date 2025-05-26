@@ -1,214 +1,220 @@
 <div align="center">
 
-![おみくじアプリバナー](assets/omikuji-banner.svg)
+![](assets/icon-sheet-splitter-banner.svg)
 
-</div>
+  <h1>🎯 Icon Sheet Splitter</h1>
 
-# 🎋 おみくじアプリ
+  <p>
+    <img alt="GitHub" src="https://img.shields.io/github/license/Sunwood-ai-labs/icon-sheet-splitter">
+    <img alt="HTML5" src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white">
+    <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white">
+    <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black">
+    <img alt="Docker" src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/Sunwood-ai-labs/icon-sheet-splitter">
+    <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/Sunwood-ai-labs/icon-sheet-splitter">
+  </p>
 
-<div align="center">
+  <p>
+    大きなアイコンシートを個別ファイルに分割するWebアプリケーション<br>
+    <b>ドラッグ&ドロップ</b>で簡単操作、<b>複数フォーマット対応</b>でデザイナーの作業効率を向上✨
+  </p>
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.28.0+-red.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Maintenance](https://img.shields.io/badge/Maintained-Yes-brightgreen.svg)
-
-**日本の伝統的なおみくじをモチーフにしたStreamlitベースのWebアプリケーション**
+  <p>
+    <a href="README_EN.md">🇺🇸 English</a> | 
+    <a href="README.md">🇯🇵 日本語</a>
+  </p>
 
 </div>
 
 ## 📖 概要
 
-このアプリケーションは、ユーザーが仮想的におみくじを引いて今日の運勢を占うことができるシンプルで楽しいWebアプリです。7種類の運勢結果があり、それぞれに特色のあるメッセージとアドバイスが表示されます。
+Icon Sheet Splitterは、大きなアイコンシートファイルを指定したグリッドに従って個別のアイコンファイルに分割する、ブラウザベースのWebアプリケーションです。ゲーム開発、Webデザイン、モバイルアプリ開発において、スプライトシートやアイコンセットを効率的に管理できます。
 
-### 🎯 主な目的
-- 日本の伝統文化であるおみくじをデジタル化
-- 毎日のモチベーション向上のためのツール
-- Streamlitの基本機能を活用したサンプルアプリケーション
+### 🎯 主な特徴
+- **シンプルなWeb UI**: ブラウザ上で動作、インストール不要
+- **ドラッグ&ドロップ対応**: 直感的なファイルアップロード
+- **リアルタイムプレビュー**: 分割結果をその場で確認
+- **複数フォーマット対応**: PNG、JPG、WebP形式での出力
+- **カスタマイズ可能**: グリッドサイズとファイル名を自由に設定
 
 ## ✨ 機能
 
-- **🎯 おみくじを引く**: ボタンをクリックして運勢を占う
-- **🌈 カラフルなUI**: 運勢ごとに異なる色でカードを表示
-- **💭 メッセージ表示**: 運勢に応じたメッセージとアドバイス
-- **📅 日時表示**: 現在の日時をリアルタイムで表示
-- **🔄 再実行機能**: 何度でもおみくじを引き直し可能
-- **ℹ️ サイドバー情報**: おみくじの種類と詳細な説明
-- **🎈 視覚エフェクト**: バルーンアニメーションで結果を華やかに演出
-
-## 🎲 運勢の種類
-
-| 運勢 | 確率 | 説明 | カラーテーマ |
-|------|------|------|-------------|
-| 大吉 | 1/7 | 最高の運勢 | #ff6b6b (赤) |
-| 中吉 | 1/7 | とても良い運勢 | #4ecdc4 (ターコイズ) |
-| 小吉 | 1/7 | 良い運勢 | #45b7d1 (青) |
-| 吉 | 1/7 | 普通の運勢 | #96ceb4 (緑) |
-| 末吉 | 1/7 | 後半良くなる運勢 | #feca57 (黄) |
-| 凶 | 1/7 | 注意が必要 | #ff9ff3 (ピンク) |
-| 大凶 | 1/7 | 困難な時期 | #54a0ff (ライトブルー) |
+- **📁 ファイルアップロード**: ドラッグ&ドロップまたはクリックで画像を選択
+- **⚙️ 分割設定**: 列数・行数を指定してグリッドをカスタマイズ
+- **👀 リアルタイムプレビュー**: 分割線を可視化して結果を事前確認
+- **🖼️ 複数フォーマット出力**: PNG/JPG/WebP形式に対応
+- **📝 ファイル名設定**: プレフィックスを指定して一括命名
+- **⬇️ 個別/一括ダウンロード**: 単体ダウンロードまたは全ファイル一括取得
+- **📱 レスポンシブデザイン**: PC・タブレット・スマートフォンに対応
 
 ## 🛠️ 技術スタック
 
-- **Python 3.8+**: プログラミング言語
-- **Streamlit 1.28.0+**: Webアプリケーションフレームワーク
-- **HTML/CSS**: カスタムスタイリング
-- **datetime**: 日時処理
-- **random**: ランダム選択機能
-
-## 📦 インストール
-
-### 前提条件
-- Python 3.8以上がインストールされていること
-- pipが利用可能であること
-
-### セットアップ手順
-
-1. **リポジトリをクローンします：**
-```bash
-git clone https://github.com/Sunwood-ai-labs/claude-code-gh-action-examples-001.git
-cd claude-code-gh-action-examples-001
-```
-
-2. **仮想環境を作成します（推奨）：**
-```bash
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-```
-
-3. **必要なパッケージをインストールします：**
-```bash
-pip install -r requirements.txt
-```
+- **HTML5**: セマンティックなマークアップとCanvas API
+- **CSS3**: モダンなレイアウトとアニメーション
+- **JavaScript ES6+**: 非同期処理とDOM操作
+- **Canvas API**: 画像処理と分割機能
+- **Docker**: コンテナ化による簡単デプロイ
+- **Nginx**: 静的ファイル配信
 
 ## 🚀 使用方法
 
-### アプリケーションの起動
+### 🌐 ブラウザで直接使用
 
+1. **ファイルをダウンロード**
 ```bash
-streamlit run omikuji_app.py
+git clone https://github.com/Sunwood-ai-labs/icon-sheet-splitter.git
+cd icon-sheet-splitter
 ```
 
-アプリケーションが起動すると、ブラウザが自動的に開き、通常は `http://localhost:8501` でアクセスできます。
+2. **ブラウザで開く**
+```bash
+open index.html  # macOS
+start index.html # Windows
+```
+
+### 🐳 Dockerで実行
+
+1. **イメージをビルド**
+```bash
+docker build -t icon-sheet-splitter .
+```
+
+2. **コンテナを起動**
+```bash
+docker run -p 8080:80 icon-sheet-splitter
+```
+
+3. **ブラウザでアクセス**
+```
+http://localhost:8080
+```
+
+### 🔧 Docker Composeで実行
+
+```bash
+docker-compose up -d
+```
+
+## 💡 使用例
 
 ### 基本的な使い方
 
-1. **アプリケーションにアクセス** - ブラウザでローカルホストを開く
-2. **おみくじを引く** - 「🎯 おみくじを引く」ボタンをクリック
-3. **結果を確認** - カラフルなカードで運勢結果を表示
-4. **メッセージを読む** - 今日のメッセージとアドバイスを確認
-5. **再挑戦** - 「🔄 もう一度引く」ボタンで再度実行
-6. **詳細情報** - サイドバーでおみくじの詳細情報を確認
+1. **画像をアップロード** - アイコンシートをドラッグ&ドロップ
+2. **分割設定** - 列数・行数を指定（例：4×4グリッド）
+3. **プレビュー確認** - 分割線が正しく表示されているか確認
+4. **出力設定** - フォーマット（PNG/JPG/WebP）とファイル名プレフィックスを設定
+5. **分割実行** - 「アイコンを分割」ボタンをクリック
+6. **ダウンロード** - 個別またはまとめてダウンロード
 
-## 📁 ファイル構成
+### 実用的なケース
+
+- **ゲーム開発**: スプライトシートを個別キャラクターファイルに分割
+- **Webデザイン**: アイコンセットを個別アイコンに分割
+- **モバイルアプリ**: UI要素を解像度別にバッチ処理
+- **素材管理**: 大型アセットの効率的な管理と配布
+
+## 📁 プロジェクト構成
 
 ```
-claude-code-gh-action-examples-001/
-├── README.md           # プロジェクト説明書（このファイル）
-├── omikuji_app.py     # メインアプリケーションファイル
-├── requirements.txt   # 必要なPythonパッケージリスト
-└── .gitignore         # Git除外ファイル設定
+icon-sheet-splitter/
+├── README.md                 # プロジェクト説明書
+├── index.html               # メインアプリケーション
+├── assets/                  # 静的リソース
+│   └── icon-sheet-splitter-banner.svg
+├── Dockerfile              # Docker設定
+├── docker-compose.yml      # Docker Compose設定
+└── CLAUDE.md              # 開発ガイドライン
 ```
 
-### ファイル詳細
+## 🎨 カスタマイズ
 
-- **`omikuji_app.py`**: Streamlitアプリケーションのメインファイル
-  - おみくじの結果データ定義
-  - UI/UXの実装
-  - ランダム選択ロジック
-- **`requirements.txt`**: 依存パッケージの管理
-- **`README.md`**: プロジェクト情報とドキュメント
+### CSS変数による見た目の調整
 
-## 🎨 デザイン特徴
+`index.html`の`:root`セクションでカラーテーマを変更可能：
 
-- **レスポンシブデザイン**: 様々な画面サイズに自動対応
-- **日本語対応**: 完全な日本語インターフェース
-- **視覚的フィードバック**: バルーンエフェクトと色分けされた結果表示
-- **直感的UI**: ワンクリックで簡単操作
-- **モダンなスタイリング**: CSS3を活用したグラデーションとシャドウ効果
-
-## 🔧 カスタマイズ
-
-### 運勢の追加・変更
-
-`omikuji_app.py`の`OMIKUJI_RESULTS`リストを編集することで、運勢の種類やメッセージをカスタマイズできます：
-
-```python
-OMIKUJI_RESULTS = [
-    {
-        "result": "超大吉",  # 運勢名
-        "color": "#ff0000",  # カラーコード
-        "message": "カスタムメッセージ",
-        "advice": "カスタムアドバイス"
-    }
-    # 他の運勢...
-]
+```css
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #e74c3c;
+    --gold-color: #f39c12;
+    /* 他のカラー変数... */
+}
 ```
 
-### UIスタイルの変更
+### 機能の拡張
 
-HTMLとCSSを直接編集することで、カードのデザインや色彩を変更できます。
+JavaScriptセクションを編集して以下の機能を追加可能：
+- 新しい出力フォーマットの対応
+- カスタム分割パターン
+- 画像フィルターの適用
+- バッチ処理機能
 
-## 🧪 テスト
+## 🧪 対応ブラウザ
 
-基本的な動作確認：
+- **Chrome** 80+
+- **Firefox** 75+
+- **Safari** 13+
+- **Edge** 80+
 
-```bash
-# アプリケーションが正常に起動するかテスト
-streamlit run omikuji_app.py --server.headless true
-```
+※ Canvas APIとES6機能を使用するため、モダンブラウザが必要です
 
-## 🤝 貢献ガイドライン
+## 🤝 コントリビューション
 
-プロジェクトへの貢献を歓迎します！以下の方法で参加できます：
+プロジェクトへの貢献を歓迎します！
 
 ### 貢献方法
 
-1. **イシューの報告** - バグや改善提案をGitHub Issuesで報告
-2. **機能追加** - 新機能のプルリクエストを作成
-3. **ドキュメント改善** - READMEやコメントの改善
-4. **翻訳** - 多言語対応への貢献
+1. **Issues報告** - バグ報告や機能要望をGitHub Issuesで投稿
+2. **プルリクエスト** - 新機能や改善の実装
+3. **ドキュメント改善** - READMEや説明の充実
+4. **テスト** - 異なる環境での動作確認
 
-### プルリクエストのガイドライン
+### 開発環境のセットアップ
 
-1. フォークしてブランチを作成
-2. 変更を加えてテスト
-3. コミットメッセージは明確に記述
-4. プルリクエストで詳細な説明を提供
+```bash
+# リポジトリをフォーク
+git fork https://github.com/Sunwood-ai-labs/icon-sheet-splitter.git
+
+# ブランチを作成
+git checkout -b feature/your-feature-name
+
+# 変更を実装
+# テストを実行
+# プルリクエストを作成
+```
 
 ## 📋 今後の予定
 
-- [ ] 運勢の詳細情報ページ追加
-- [ ] ユーザーカスタマイズ機能
-- [ ] 運勢履歴の保存機能
-- [ ] 多言語対応（英語、中国語など）
-- [ ] モバイルアプリ版の開発
-- [ ] API機能の追加
+- [ ] SVG形式の対応
+- [ ] アニメーションGIF分割機能
+- [ ] AI-powered自動分割
+- [ ] クラウドストレージ連携
+- [ ] PWA対応
+- [ ] 多言語国際化
 
 ## 📄 ライセンス
 
-このプロジェクトはMITライセンスの下で公開されています。詳細は[LICENSE](LICENSE)ファイルをご覧ください。
+このプロジェクトはMITライセンスの下で公開されています。
 
 ## 👥 作者情報
 
-- **開発元**: [Sunwood AI Labs](https://github.com/Sunwood-ai-labs)
+- **開発**: [Sunwood AI Labs](https://github.com/Sunwood-ai-labs)
 - **メンテナー**: Sunwood AI Labs チーム
-- **サポート**: GitHub Issues を通じてサポートを提供
 
 ## 🙏 謝辞
 
-- Streamlitコミュニティの皆様
-- 日本の伝統文化であるおみくじに敬意を表して
+- Canvas APIを活用した画像処理機能
+- モダンWebテクノロジーの活用
 - オープンソースコミュニティへの感謝
 
 ---
 
 <div align="center">
 
-**Made with ❤️ using [Streamlit](https://streamlit.io/)**
+**Made with ❤️ using Modern Web Technologies**
 
-[🏠 ホーム](https://github.com/Sunwood-ai-labs/claude-code-gh-action-examples-001) | 
-[📊 Issues](https://github.com/Sunwood-ai-labs/claude-code-gh-action-examples-001/issues) | 
-[🔄 Pull Requests](https://github.com/Sunwood-ai-labs/claude-code-gh-action-examples-001/pulls)
+[🏠 ホーム](https://github.com/Sunwood-ai-labs/icon-sheet-splitter) | 
+[📊 Issues](https://github.com/Sunwood-ai-labs/icon-sheet-splitter/issues) | 
+[🔄 Pull Requests](https://github.com/Sunwood-ai-labs/icon-sheet-splitter/pulls)
 
 </div>
