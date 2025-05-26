@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  icon-sheet-splitter:
+    build: .
+    ports:
+      - "8080:80"
+    container_name: icon-sheet-splitter-app
+    restart: unless-stopped
+    volumes:
+      # Optional: Mount local files for development
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+      - ./assets:/usr/share/nginx/html/assets:ro
+
+networks:
+  default:
+    name: icon-sheet-splitter-network
