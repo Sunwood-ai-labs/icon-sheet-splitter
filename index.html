@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Sheet Splitter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol&display=swap" rel="stylesheet">
+    <style>
+        .kaisei-decol-regular {
+            font-family: "Kaisei Decol", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --gold-color: #f39c12;
+            --paper-color: #faf8f5;
+            --charcoal: #34495e;
+            --muted-red: #c0392b;
+            --warm-gray: #95a5a6;
+            --shadow: rgba(52, 73, 94, 0.1);
+        }
+        
+        body {
+            font-family: "Kaisei Decol", serif;
+            background: linear-gradient(135deg, var(--paper-color) 0%, #f5f3f0 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--charcoal);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px var(--shadow);
+            overflow: hidden;
+            border: 1px solid #e8e6e3;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--charcoal) 100%);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+        
+        .header h1 {
+            color: white;
+            font-size: 2.8em;
+            font-weight: 400;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+            font-family: "Kaisei Decol", serif;
+        }
+        
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2em;
+            font-weight: 400;
+            letter-spacing: 1px;
+            font-family: "Kaisei Decol", serif;
+        }
+        
+        .content {
+            padding: 50px;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--warm-gray);
+            border-radius: 12px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #fafafa;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--accent-color);
+            background: #fff5f5;
+            transform: translateY(-2px);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--gold-color);
+            background: #fffbf0;
+            box-shadow: 0 4px 20px rgba(243, 156, 18, 0.2);
+        }
+        
+        .upload-icon {
+            font-size: 4em;
+            color: var(--warm-gray);
+            margin-bottom: 20px;
+        }
+        
+        .upload-text {
+            font-size: 1.3em;
+            color: var(--charcoal);
+            margin-bottom: 15px;
+            font-weight: 400;
+            font-family: "Kaisei Decol", serif;
+            letter-spacing: 1px;
+        }
+        
+        .upload-hint {
+            color: var(--warm-gray);
+            font-size: 0.9em;
+        }
+        
+        .settings-panel {
+            background: var(--paper-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid #e8e6e3;
+        }
+        
+        .settings-title {
+            font-size: 1.6em;
+            font-weight: 400;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            font-family: "Kaisei Decol", serif;
+            letter-spacing: 1px;
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+        
+        .setting-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .setting-item label {
+            font-weight: 500;
+            color: var(--charcoal);
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        .setting-item input {
+            padding: 12px 15px;
+            border: 2px solid #e8e6e3;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .setting-item input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+        
+        .preview-section {
+            margin: 40px 0;
+        }
+        
+        .preview-title {
+            font-size: 1.5em;
+            font-weight: 400;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-family: "Kaisei Decol", serif;
+            letter-spacing: 1px;
+        }
+        
+        .preview-container {
+            border: 1px solid #e8e6e3;
+            border-radius: 12px;
+            padding: 20px;
+            background: white;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-grid {
+            display: grid;
+            gap: 2px;
+            border: 2px solid var(--accent-color);
+            background: var(--accent-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .preview-cell {
+            background: white;
+            min-width: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            color: var(--warm-gray);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            min-width: 150px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--muted-red) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--paper-color);
+            color: var(--charcoal);
+            border: 2px solid var(--warm-gray);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--charcoal);
+            color: white;
+            border-color: var(--charcoal);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e8e6e3;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--gold-color));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .result-item {
+            border: 1px solid #e8e6e3;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            box-shadow: 0 4px 15px var(--shadow);
+            transform: translateY(-2px);
+        }
+        
+        .result-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .result-item button {
+            background: var(--gold-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item button:hover {
+            background: #e67e22;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Icon Sheet Splitter</h1>
+            <p class="subtitle">アイコンシートを個別ファイルに分割</p>
+        </div>
+        
+        <div class="content">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">アイコンシートをここにドロップ</div>
+                <div class="upload-hint">または クリックしてファイルを選択</div>
+                <input type="file" id="fileInput" accept="image/*" class="hidden">
+            </div>
+            
+            <div class="settings-panel">
+                <div class="settings-title">分割設定</div>
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <label for="columns">列数</label>
+                        <input type="number" id="columns" value="4" min="1" max="20">
+                    </div>
+                    <div class="setting-item">
+                        <label for="rows">行数</label>
+                        <input type="number" id="rows" value="4" min="1" max="20">
+                    </div>
+                    <div class="setting-item">
+                        <label for="format">出力形式</label>
+                        <select id="format" style="padding: 12px 15px; border: 2px solid #e8e6e3; border-radius: 8px; font-size: 1em;">
+                            <option value="png">PNG</option>
+                            <option value="jpg">JPG</option>
+                            <option value="webp">WebP</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="prefix">ファイル名プレフィックス</label>
+                        <input type="text" id="prefix" value="icon" placeholder="icon">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <div class="preview-title">プレビュー</div>
+                <div class="preview-container" id="previewContainer">
+                    <div style="color: var(--warm-gray);">画像を選択してください</div>
+                </div>
+            </div>
+            
+            <div class="progress-bar hidden" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="splitButton" disabled>アイコンを分割</button>
+                <button class="btn btn-secondary" id="downloadAllButton" disabled>すべてダウンロード</button>
+            </div>
+            
+            <div class="result-grid" id="resultGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        let originalImage = null;
+        let splitImages = [];
+        
+        // DOM要素の取得
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const splitButton = document.getElementById('splitButton');
+        const downloadAllButton = document.getElementById('downloadAllButton');
+        const resultGrid = document.getElementById('resultGrid');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        
+        // ファイルアップロード処理
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('drop', handleDrop);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        // 設定変更時のプレビュー更新
+        ['columns', 'rows'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updatePreview);
+        });
+        
+        splitButton.addEventListener('click', splitImage);
+        downloadAllButton.addEventListener('click', downloadAll);
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+        
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+        
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+        
+        function processFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('画像ファイルを選択してください。');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    originalImage = img;
+                    updatePreview();
+                    splitButton.disabled = false;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function updatePreview() {
+            if (!originalImage) return;
+            
+            const columns = parseInt(document.getElementById('columns').value);
+            const rows = parseInt(document.getElementById('rows').value);
+            
+            // プレビューグリッドの作成
+            const previewGrid = document.createElement('div');
+            previewGrid.className = 'preview-grid';
+            previewGrid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const cellWidth = originalImage.width / columns;
+            const cellHeight = originalImage.height / rows;
+            
+            canvas.width = Math.min(400, originalImage.width);
+            canvas.height = (canvas.width / originalImage.width) * originalImage.height;
+            
+            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+            
+            // グリッド線を描画
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+            
+            for (let i = 1; i < columns; i++) {
+                const x = (i * canvas.width) / columns;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            for (let i = 1; i < rows; i++) {
+                const y = (i * canvas.height) / rows;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            previewContainer.innerHTML = '';
+            previewContainer.appendChild(canvas);
+        }
+        
+        async function splitImage() {
+            if (!originalImage) return;
+            
+            const columns = parseInt(document.getElementById('columns').value);
+            const rows = parseInt(document.getElementById('rows').value);
+            const format = document.getElementById('format').value;
+            const prefix = document.getElementById('prefix').value || 'icon';
+            
+            splitImages = [];
+            resultGrid.innerHTML = '';
+            progressBar.classList.remove('hidden');
+            progressFill.style.width = '0%';
+            
+            const cellWidth = originalImage.width / columns;
+            const cellHeight = originalImage.height / rows;
+            const total = columns * rows;
+            let processed = 0;
+            
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < columns; col++) {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    canvas.width = cellWidth;
+                    canvas.height = cellHeight;
+                    
+                    ctx.drawImage(
+                        originalImage,
+                        col * cellWidth, row * cellHeight, cellWidth, cellHeight,
+                        0, 0, cellWidth, cellHeight
+                    );
+                    
+                    const mimeType = format === 'jpg' ? 'image/jpeg' : `image/${format}`;
+                    const quality = format === 'jpg' ? 0.9 : undefined;
+                    const dataUrl = canvas.toDataURL(mimeType, quality);
+                    
+                    const filename = `${prefix}_${row + 1}_${col + 1}.${format}`;
+                    splitImages.push({ dataUrl, filename });
+                    
+                    // 結果グリッドに追加
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    resultItem.innerHTML = `
+                        <img src="${dataUrl}" alt="${filename}">
+                        <div style="font-size: 0.8em; margin-bottom: 10px;">${filename}</div>
+                        <button onclick="downloadSingle(${processed})">ダウンロード</button>
+                    `;
+                    resultGrid.appendChild(resultItem);
+                    
+                    processed++;
+                    progressFill.style.width = `${(processed / total) * 100}%`;
+                    
+                    // UIの更新を待つ
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+            }
+            
+            downloadAllButton.disabled = false;
+            progressBar.classList.add('hidden');
+        }
+        
+        function downloadSingle(index) {
+            const item = splitImages[index];
+            const link = document.createElement('a');
+            link.download = item.filename;
+            link.href = item.dataUrl;
+            link.click();
+        }
+        
+        function downloadAll() {
+            splitImages.forEach((item, index) => {
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.download = item.filename;
+                    link.href = item.dataUrl;
+                    link.click();
+                }, index * 100);
+            });
+        }
+    </script>
+</body>
+</html>
