@@ -1,3 +1,13 @@
+---
+title: Icon Sheet Splitter
+emoji: 🔥
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+license: mit
+---
+
 <div align="center">
 
 ![](assets/icon-sheet-splitter-banner.svg)
