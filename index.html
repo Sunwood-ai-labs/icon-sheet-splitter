@@ -393,6 +393,26 @@
                         <input type="text" id="prefix" value="icon" placeholder="icon">
                     </div>
                 </div>
+                <!-- オフセット設定 -->
+                <div class="settings-title" style="margin-top:30px;">オフセット設定</div>
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <label for="offsetLeft">左オフセット(px)</label>
+                        <input type="number" id="offsetLeft" value="0" min="0">
+                    </div>
+                    <div class="setting-item">
+                        <label for="offsetRight">右オフセット(px)</label>
+                        <input type="number" id="offsetRight" value="0" min="0">
+                    </div>
+                    <div class="setting-item">
+                        <label for="offsetTop">上オフセット(px)</label>
+                        <input type="number" id="offsetTop" value="0" min="0">
+                    </div>
+                    <div class="setting-item">
+                        <label for="offsetBottom">下オフセット(px)</label>
+                        <input type="number" id="offsetBottom" value="0" min="0">
+                    </div>
+                </div>
             </div>
             
             <div class="preview-section">
@@ -437,7 +457,7 @@
         fileInput.addEventListener('change', handleFileSelect);
         
         // 設定変更時のプレビュー更新
-        ['columns', 'rows'].forEach(id => {
+        ['columns', 'rows', 'offsetLeft', 'offsetRight', 'offsetTop', 'offsetBottom'].forEach(id => {
             document.getElementById(id).addEventListener('input', updatePreview);
         });
         
@@ -494,42 +514,84 @@
             
             const columns = parseInt(document.getElementById('columns').value);
             const rows = parseInt(document.getElementById('rows').value);
-            
-            // プレビューグリッドの作成
-            const previewGrid = document.createElement('div');
-            previewGrid.className = 'preview-grid';
-            previewGrid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-            
+            const offsetLeft = parseInt(document.getElementById('offsetLeft').value) || 0;
+            const offsetRight = parseInt(document.getElementById('offsetRight').value) || 0;
+            const offsetTop = parseInt(document.getElementById('offsetTop').value) || 0;
+            const offsetBottom = parseInt(document.getElementById('offsetBottom').value) || 0;
+
+            // オフセットを考慮した分割範囲
+            const splitWidth = originalImage.width - offsetLeft - offsetRight;
+            const splitHeight = originalImage.height - offsetTop - offsetBottom;
+
+            // プレビューcanvasサイズ
+            const previewMaxWidth = 400;
+            const previewScale = Math.min(1, previewMaxWidth / originalImage.width);
+            const canvasWidth = originalImage.width * previewScale;
+            const canvasHeight = originalImage.height * previewScale;
+
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            const cellWidth = originalImage.width / columns;
-            const cellHeight = originalImage.height / rows;
-            
-            canvas.width = Math.min(400, originalImage.width);
-            canvas.height = (canvas.width / originalImage.width) * originalImage.height;
-            
-            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
-            
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+
+            // 画像全体を描画
+            ctx.drawImage(originalImage, 0, 0, canvasWidth, canvasHeight);
+
+            // オフセット範囲を半透明で強調
+            ctx.save();
+            ctx.fillStyle = "rgba(231,76,60,0.08)";
+            // 上
+            if (offsetTop > 0) {
+                ctx.fillRect(0, 0, canvasWidth, offsetTop * previewScale);
+            }
+            // 下
+            if (offsetBottom > 0) {
+                ctx.fillRect(0, canvasHeight - offsetBottom * previewScale, canvasWidth, offsetBottom * previewScale);
+            }
+            // 左
+            if (offsetLeft > 0) {
+                ctx.fillRect(0, offsetTop * previewScale, offsetLeft * previewScale, canvasHeight - offsetTop * previewScale - offsetBottom * previewScale);
+            }
+            // 右
+            if (offsetRight > 0) {
+                ctx.fillRect(canvasWidth - offsetRight * previewScale, offsetTop * previewScale, offsetRight * previewScale, canvasHeight - offsetTop * previewScale - offsetBottom * previewScale);
+            }
+            ctx.restore();
+
             // グリッド線を描画
+            ctx.save();
             ctx.strokeStyle = '#e74c3c';
             ctx.lineWidth = 2;
-            
+
+            // 垂直線
             for (let i = 1; i < columns; i++) {
-                const x = (i * canvas.width) / columns;
+                const x = offsetLeft + (i * splitWidth) / columns;
+                const xScaled = x * previewScale;
                 ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvas.height);
+                ctx.moveTo(xScaled, offsetTop * previewScale);
+                ctx.lineTo(xScaled, (originalImage.height - offsetBottom) * previewScale);
                 ctx.stroke();
             }
-            
+            // 水平線
             for (let i = 1; i < rows; i++) {
-                const y = (i * canvas.height) / rows;
+                const y = offsetTop + (i * splitHeight) / rows;
+                const yScaled = y * previewScale;
                 ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
+                ctx.moveTo(offsetLeft * previewScale, yScaled);
+                ctx.lineTo((originalImage.width - offsetRight) * previewScale, yScaled);
                 ctx.stroke();
             }
-            
+            // オフセット範囲の枠
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(
+                offsetLeft * previewScale,
+                offsetTop * previewScale,
+                splitWidth * previewScale,
+                splitHeight * previewScale
+            );
+            ctx.restore();
+
             previewContainer.innerHTML = '';
             previewContainer.appendChild(canvas);
         }
@@ -547,8 +609,17 @@
             progressBar.classList.remove('hidden');
             progressFill.style.width = '0%';
             
-            const cellWidth = originalImage.width / columns;
-            const cellHeight = originalImage.height / rows;
+            // オフセット値取得
+            const offsetLeft = parseInt(document.getElementById('offsetLeft').value) || 0;
+            const offsetRight = parseInt(document.getElementById('offsetRight').value) || 0;
+            const offsetTop = parseInt(document.getElementById('offsetTop').value) || 0;
+            const offsetBottom = parseInt(document.getElementById('offsetBottom').value) || 0;
+
+            // 分割範囲
+            const splitWidth = originalImage.width - offsetLeft - offsetRight;
+            const splitHeight = originalImage.height - offsetTop - offsetBottom;
+            const cellWidth = splitWidth / columns;
+            const cellHeight = splitHeight / rows;
             const total = columns * rows;
             let processed = 0;
             
@@ -562,7 +633,7 @@
                     
                     ctx.drawImage(
                         originalImage,
-                        col * cellWidth, row * cellHeight, cellWidth, cellHeight,
+                        offsetLeft + col * cellWidth, offsetTop + row * cellHeight, cellWidth, cellHeight,
                         0, 0, cellWidth, cellHeight
                     );
                     
