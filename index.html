@@ -207,6 +207,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 80%;
+            margin: 0 auto;
         }
         
         .preview-grid {
@@ -398,19 +400,23 @@
                 <div class="settings-grid">
                     <div class="setting-item">
                         <label for="offsetLeft">左オフセット(px)</label>
-                        <input type="number" id="offsetLeft" value="0" min="0">
+                        <input type="number" id="offsetLeft" value="0" min="0" style="margin-bottom:8px;">
+                        <input type="range" id="offsetLeftSlider" value="0" min="0" max="500">
                     </div>
                     <div class="setting-item">
                         <label for="offsetRight">右オフセット(px)</label>
-                        <input type="number" id="offsetRight" value="0" min="0">
+                        <input type="number" id="offsetRight" value="0" min="0" style="margin-bottom:8px;">
+                        <input type="range" id="offsetRightSlider" value="0" min="0" max="500">
                     </div>
                     <div class="setting-item">
                         <label for="offsetTop">上オフセット(px)</label>
-                        <input type="number" id="offsetTop" value="0" min="0">
+                        <input type="number" id="offsetTop" value="0" min="0" style="margin-bottom:8px;">
+                        <input type="range" id="offsetTopSlider" value="0" min="0" max="500">
                     </div>
                     <div class="setting-item">
                         <label for="offsetBottom">下オフセット(px)</label>
-                        <input type="number" id="offsetBottom" value="0" min="0">
+                        <input type="number" id="offsetBottom" value="0" min="0" style="margin-bottom:8px;">
+                        <input type="range" id="offsetBottomSlider" value="0" min="0" max="500">
                     </div>
                 </div>
             </div>
@@ -448,19 +454,49 @@
         const resultGrid = document.getElementById('resultGrid');
         const progressBar = document.getElementById('progressBar');
         const progressFill = document.getElementById('progressFill');
-        
+
+        // オフセットスライダー要素取得
+        const offsetLeftInput = document.getElementById('offsetLeft');
+        const offsetLeftSlider = document.getElementById('offsetLeftSlider');
+        const offsetRightInput = document.getElementById('offsetRight');
+        const offsetRightSlider = document.getElementById('offsetRightSlider');
+        const offsetTopInput = document.getElementById('offsetTop');
+        const offsetTopSlider = document.getElementById('offsetTopSlider');
+        const offsetBottomInput = document.getElementById('offsetBottom');
+        const offsetBottomSlider = document.getElementById('offsetBottomSlider');
+
+        // input <-> slider 双方向同期
+        function bindOffsetSync(input, slider) {
+            input.addEventListener('input', () => {
+                slider.value = input.value;
+                updatePreview();
+            });
+            slider.addEventListener('input', () => {
+                input.value = slider.value;
+                updatePreview();
+            });
+        }
+        bindOffsetSync(offsetLeftInput, offsetLeftSlider);
+        bindOffsetSync(offsetRightInput, offsetRightSlider);
+        bindOffsetSync(offsetTopInput, offsetTopSlider);
+        bindOffsetSync(offsetBottomInput, offsetBottomSlider);
+
+        // プレビューセクションの幅を80%に
+        previewContainer.style.width = "80%";
+        previewContainer.style.margin = "0 auto";
+
         // ファイルアップロード処理
         uploadArea.addEventListener('click', () => fileInput.click());
         uploadArea.addEventListener('dragover', handleDragOver);
         uploadArea.addEventListener('drop', handleDrop);
         uploadArea.addEventListener('dragleave', handleDragLeave);
         fileInput.addEventListener('change', handleFileSelect);
-        
+
         // 設定変更時のプレビュー更新
-        ['columns', 'rows', 'offsetLeft', 'offsetRight', 'offsetTop', 'offsetBottom'].forEach(id => {
+        ['columns', 'rows'].forEach(id => {
             document.getElementById(id).addEventListener('input', updatePreview);
         });
-        
+
         splitButton.addEventListener('click', splitImage);
         downloadAllButton.addEventListener('click', downloadAll);
         
@@ -524,7 +560,8 @@
             const splitHeight = originalImage.height - offsetTop - offsetBottom;
 
             // プレビューcanvasサイズ
-            const previewMaxWidth = 400;
+            // プレビュー最大幅を80%に
+            const previewMaxWidth = previewContainer.offsetWidth > 0 ? previewContainer.offsetWidth * 0.8 : 600;
             const previewScale = Math.min(1, previewMaxWidth / originalImage.width);
             const canvasWidth = originalImage.width * previewScale;
             const canvasHeight = originalImage.height * previewScale;
@@ -564,6 +601,135 @@
             ctx.lineWidth = 2;
 
             // 垂直線
+// --- オフセットラインをcanvas上でドラッグ操作するための処理 ---
+// ドラッグ対象: left, right, top, bottom
+const DRAG_MARGIN = 10; // ハンドルの感知範囲(px)
+let dragging = null; // 'left'|'right'|'top'|'bottom'|null
+let dragStart = {x:0, y:0};
+let dragOffsetStart = {left:0, right:0, top:0, bottom:0};
+
+// プレビューcanvasが存在する場合のみイベントを付与
+canvas.style.cursor = "crosshair";
+canvas.addEventListener('mousedown', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / previewScale;
+    const y = (e.clientY - rect.top) / previewScale;
+
+    // どのラインが近いか判定
+    if (Math.abs(x - offsetLeft) < DRAG_MARGIN) {
+        dragging = 'left';
+        dragStart = {x, y};
+        dragOffsetStart = {
+            left: offsetLeft,
+            right: offsetRight,
+            top: offsetTop,
+            bottom: offsetBottom
+        };
+        canvas.style.cursor = "ew-resize";
+    } else if (Math.abs(x - (originalImage.width - offsetRight)) < DRAG_MARGIN) {
+        dragging = 'right';
+        dragStart = {x, y};
+        dragOffsetStart = {
+            left: offsetLeft,
+            right: offsetRight,
+            top: offsetTop,
+            bottom: offsetBottom
+        };
+        canvas.style.cursor = "ew-resize";
+    } else if (Math.abs(y - offsetTop) < DRAG_MARGIN) {
+        dragging = 'top';
+        dragStart = {x, y};
+        dragOffsetStart = {
+            left: offsetLeft,
+            right: offsetRight,
+            top: offsetTop,
+            bottom: offsetBottom
+        };
+        canvas.style.cursor = "ns-resize";
+    } else if (Math.abs(y - (originalImage.height - offsetBottom)) < DRAG_MARGIN) {
+        dragging = 'bottom';
+        dragStart = {x, y};
+        dragOffsetStart = {
+            left: offsetLeft,
+            right: offsetRight,
+            top: offsetTop,
+            bottom: offsetBottom
+        };
+        canvas.style.cursor = "ns-resize";
+    } else {
+        dragging = null;
+    }
+});
+
+window.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / previewScale;
+    const y = (e.clientY - rect.top) / previewScale;
+    if (dragging === 'left') {
+        let delta = x - dragStart.x;
+        let val = dragOffsetStart.left + delta;
+        val = Math.round(val);
+        val = Math.max(0, Math.min(originalImage.width - offsetRight - 1, val));
+        offsetLeftInput.value = val;
+        offsetLeftSlider.value = val;
+    } else if (dragging === 'right') {
+        let delta = dragStart.x - x;
+        let val = dragOffsetStart.right + delta;
+        val = Math.round(val);
+        val = Math.max(0, Math.min(originalImage.width - offsetLeft - 1, val));
+        offsetRightInput.value = val;
+        offsetRightSlider.value = val;
+    } else if (dragging === 'top') {
+        let delta = y - dragStart.y;
+        let val = dragOffsetStart.top + delta;
+        val = Math.round(val);
+        val = Math.max(0, Math.min(originalImage.height - offsetBottom - 1, val));
+        offsetTopInput.value = val;
+        offsetTopSlider.value = val;
+    } else if (dragging === 'bottom') {
+        let delta = dragStart.y - y;
+        let val = dragOffsetStart.bottom + delta;
+        val = Math.round(val);
+        val = Math.max(0, Math.min(originalImage.height - offsetTop - 1, val));
+        offsetBottomInput.value = val;
+        offsetBottomSlider.value = val;
+    }
+    updatePreview();
+});
+
+window.addEventListener('mouseup', function(e) {
+    if (dragging) {
+        dragging = null;
+        canvas.style.cursor = "crosshair";
+    }
+});
+
+// ハンドルを太く描画
+ctx.save();
+ctx.strokeStyle = "#e74c3c";
+ctx.lineWidth = 6;
+// left
+ctx.beginPath();
+ctx.moveTo(offsetLeft * previewScale, offsetTop * previewScale);
+ctx.lineTo(offsetLeft * previewScale, (originalImage.height - offsetBottom) * previewScale);
+ctx.stroke();
+// right
+ctx.beginPath();
+ctx.moveTo((originalImage.width - offsetRight) * previewScale, offsetTop * previewScale);
+ctx.lineTo((originalImage.width - offsetRight) * previewScale, (originalImage.height - offsetBottom) * previewScale);
+ctx.stroke();
+// top
+ctx.beginPath();
+ctx.moveTo(offsetLeft * previewScale, offsetTop * previewScale);
+ctx.lineTo((originalImage.width - offsetRight) * previewScale, offsetTop * previewScale);
+ctx.stroke();
+// bottom
+ctx.beginPath();
+ctx.moveTo(offsetLeft * previewScale, (originalImage.height - offsetBottom) * previewScale);
+ctx.lineTo((originalImage.width - offsetRight) * previewScale, (originalImage.height - offsetBottom) * previewScale);
+ctx.stroke();
+ctx.restore();
             for (let i = 1; i < columns; i++) {
                 const x = offsetLeft + (i * splitWidth) / columns;
                 const xScaled = x * previewScale;
